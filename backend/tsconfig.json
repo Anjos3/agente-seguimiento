@@ -1,0 +1,54 @@
+{
+  "compilerOptions": {
+    /* ===== CONFIGURACIÓN BASE ===== */
+    // Versión de JavaScript a generar (ES2022 = moderno, soporta async/await nativo)
+    "target": "ES2022",
+
+    // Sistema de módulos (NodeNext = soporte completo para Node.js moderno)
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    /* ===== RUTAS ===== */
+    // Carpeta donde está el código fuente
+    "rootDir": "./src",
+
+    // Carpeta donde se genera el código compilado
+    "outDir": "./dist",
+
+    // Permite importar archivos JSON
+    "resolveJsonModule": true,
+
+    /* ===== VERIFICACIONES ESTRICTAS ===== */
+    // Activa TODAS las verificaciones de TypeScript (recomendado)
+    "strict": true,
+
+    // Verifica que no haya variables sin usar
+    "noUnusedLocals": true,
+
+    // Verifica que no haya parámetros sin usar
+    "noUnusedParameters": true,
+
+    // Verifica que todas las rutas de un switch tengan return
+    "noFallthroughCasesInSwitch": true,
+
+    /* ===== INTEROPERABILIDAD ===== */
+    // Permite importar módulos CommonJS con sintaxis ES6
+    "esModuleInterop": true,
+
+    // Fuerza consistencia en mayúsculas/minúsculas de imports
+    "forceConsistentCasingInFileNames": true,
+
+    // Salta verificación de tipos en node_modules (más rápido)
+    "skipLibCheck": true,
+
+    /* ===== DECORADORES (para futuro uso) ===== */
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+
+  /* Archivos a incluir en la compilación */
+  "include": ["src/**/*"],
+
+  /* Archivos a excluir */
+  "exclude": ["node_modules", "dist"]
+}
