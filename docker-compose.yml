@@ -10,7 +10,7 @@ services:
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/task_tracker_ai
-      - JWT_SECRET=${JWT_SECRET:-9e0415ac1c12199c95c17cb8c26ebb2581905dbfd08ff407f414b70aaecdc75b}
+      - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRES_IN=7d
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY}
