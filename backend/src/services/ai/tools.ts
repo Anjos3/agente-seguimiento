@@ -111,19 +111,27 @@ Si no se proporciona taskId, completa la tarea activa automáticamente.`,
     type: 'function',
     function: {
       name: 'start_task',
-      description: `Inicia o reanuda el timer de una tarea. Usar cuando el usuario dice:
+      description: `Inicia o reanuda el timer de una tarea pausada. Usar cuando el usuario dice:
 - "Continúo con X" o "Retomo X"
 - "Empiezo X" (para una tarea existente)
-- "Vuelvo a X"`,
+- "Vuelvo a X"
+- "Ya volví" o "Continúo" (sin especificar tarea)
+
+Puedes usar taskName para buscar la tarea por nombre si no tienes el ID.
+Si no se proporciona ni taskId ni taskName, se reanuda la última tarea pausada.`,
       parameters: {
         type: 'object',
         properties: {
           taskId: {
             type: 'string',
-            description: 'ID de la tarea a iniciar',
+            description: 'ID de la tarea a iniciar (opcional)',
+          },
+          taskName: {
+            type: 'string',
+            description: 'Nombre de la tarea a buscar (opcional, se usa si no hay taskId)',
           },
         },
-        required: ['taskId'],
+        required: [],
       },
     },
   },
@@ -209,7 +217,8 @@ export interface ToolArguments {
     taskId?: string;
   };
   start_task: {
-    taskId: string;
+    taskId?: string;
+    taskName?: string;
   };
   get_today_tasks: Record<string, never>;
   get_active_task: Record<string, never>;

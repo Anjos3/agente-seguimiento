@@ -155,9 +155,35 @@ export async function executeTool(
       // INICIAR TAREA
       // =================================================
       case 'start_task': {
-        const { taskId } = args as ToolArguments['start_task'];
+        const { taskId, taskName } = args as ToolArguments['start_task'];
 
-        const result = await tasksService.startTask(userId, taskId);
+        let targetId = taskId;
+
+        // Si no hay taskId, buscar por nombre o última pendiente
+        if (!targetId) {
+          let task = null;
+
+          if (taskName) {
+            // Buscar por nombre
+            task = await tasksRepo.findPendingByName(userId, taskName);
+          }
+
+          if (!task) {
+            // Buscar última tarea pendiente
+            task = await tasksRepo.getLastPendingTask(userId);
+          }
+
+          if (!task) {
+            return {
+              success: false,
+              error: 'No hay tareas pendientes para reanudar',
+            };
+          }
+
+          targetId = task.id;
+        }
+
+        const result = await tasksService.startTask(userId, targetId);
 
         if (!result.success) {
           return { success: false, error: result.error.message };

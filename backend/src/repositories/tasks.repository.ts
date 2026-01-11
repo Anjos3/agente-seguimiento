@@ -353,6 +353,41 @@ export async function getLastEvent(taskId: string): Promise<TaskEvent | null> {
 }
 
 /**
+ * Busca tareas pendientes por nombre (búsqueda parcial)
+ */
+export async function findPendingByName(
+  userId: string,
+  name: string
+): Promise<Task | null> {
+  const result = await query<Task>(
+    `SELECT * FROM tasks
+     WHERE user_id = $1
+       AND status = 'pending'
+       AND LOWER(name) LIKE LOWER($2)
+     ORDER BY updated_at DESC
+     LIMIT 1`,
+    [userId, `%${name}%`]
+  );
+
+  return result.rows[0] || null;
+}
+
+/**
+ * Obtiene la última tarea pendiente del usuario
+ */
+export async function getLastPendingTask(userId: string): Promise<Task | null> {
+  const result = await query<Task>(
+    `SELECT * FROM tasks
+     WHERE user_id = $1 AND status = 'pending'
+     ORDER BY updated_at DESC
+     LIMIT 1`,
+    [userId]
+  );
+
+  return result.rows[0] || null;
+}
+
+/**
  * Calcula el tiempo total trabajado en una tarea
  * Suma los intervalos entre started/resumed y paused/completed
  */
