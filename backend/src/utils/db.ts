@@ -15,7 +15,7 @@
  * Esto es crucial para un servidor que maneja muchas requests.
  */
 
-import { Pool, PoolClient, QueryResult } from 'pg';
+import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 import { env } from './env.js';
 
 /**
@@ -71,7 +71,7 @@ pool.on('connect', () => {
  * const newUser = result.rows[0];
  * ```
  */
-export async function query<T = unknown>(
+export async function query<T extends QueryResultRow = QueryResultRow>(
   text: string,
   params?: unknown[]
 ): Promise<QueryResult<T>> {

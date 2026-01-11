@@ -201,14 +201,13 @@ declare module 'fastify' {
   }
 
   interface FastifyRequest {
-    user?: JWTPayload;
     startTime?: number;
   }
 }
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
-    payload: JWTPayload;
-    user: JWTPayload;
+    payload: { userId: string; email: string };
+    user: { userId: string; email: string };
   }
 }
