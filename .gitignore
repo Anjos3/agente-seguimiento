@@ -54,3 +54,4 @@ temp/
 # Claude local
 .claude/
 nul
+traefik/certs/origin.key

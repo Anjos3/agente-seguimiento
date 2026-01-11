@@ -1,41 +1,94 @@
 services:
+  # ============================================
+  # TRAEFIK - Reverse Proxy & SSL
+  # ============================================
+  traefik:
+    image: traefik:v3.6
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - ./traefik/certs:/certs:ro
+    networks:
+      - default
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+
+  # ============================================
+  # BACKEND - API Node.js
+  # ============================================
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    ports:
-      - "127.0.0.1:3000:3000"
-    volumes:
-      - ./backend/src:/app/src
+    image: agente-seguimiento-backend:latest
     environment:
       - NODE_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/task_tracker_ai
-      - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRES_IN=7d
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - DEEPGRAM_API_KEY=${DEEPGRAM_API_KEY}
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
+      - OPENAI_MODEL=gpt-4o-mini
+      - DEEPGRAM_MODEL=nova-2
+      - CORS_ORIGIN=*
+      - DB_HOST=agente_postgres
+    secrets:
+      - jwt_secret
+      - openai_api_key
+      - db_password
+    networks:
+      - default
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.backend.rule=Host(`agenteapi.itelcore.org`)"
+        - "traefik.http.routers.backend.entrypoints=websecure"
+        - "traefik.http.routers.backend.tls=true"
+        - "traefik.http.services.backend.loadbalancer.server.port=3000"
+      restart_policy:
+        condition: on-failure
 
+  # ============================================
+  # POSTGRESQL - Base de datos
+  # ============================================
   postgres:
     image: postgres:16-alpine
-    ports:
-      - "127.0.0.1:5432:5432"
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
       - POSTGRES_DB=task_tracker_ai
+    secrets:
+      - db_password
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./backend/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - default
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+networks:
+  default:
+    driver: overlay
+    attachable: true
+
+secrets:
+  jwt_secret:
+    external: true
+  openai_api_key:
+    external: true
+  db_password:
+    external: true
 
 volumes:
   pgdata:

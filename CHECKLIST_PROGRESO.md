@@ -1,23 +1,16 @@
 # Checklist de Progreso - Agente de IA para Seguimiento de Tareas
 
-**Fecha de última actualización:** 2026-01-08
-**Sesión:** 1
+**Fecha de última actualización:** 2026-01-11
+**Sesión:** 3
 
 ---
 
 ## Resumen Ejecutivo
 
-Este documento rastrea el progreso de implementación comparado con el documento de arquitectura ubicado en:
-`C:\Users\Jos\.claude\plans\serialized-doodling-church.md`
-
----
-
-## Estado General por Fase
-
 | Fase | Estado | Progreso |
 |------|--------|----------|
-| Fase 1: Fundamentos | 🟡 En progreso | 40% |
-| Fase 2: Tools y UI Dinámica | ⚪ No iniciada | 0% |
+| Fase 1: Fundamentos | ✅ Completada | 100% |
+| Fase 2: Tools y UI Dinámica | ✅ Completada | 100% |
 | Fase 3: Categorías y Metas | ⚪ No iniciada | 0% |
 | Fase 4: Check-in y Analytics | ⚪ No iniciada | 0% |
 | Fase 5: Diagnóstico Inteligente | ⚪ No iniciada | 0% |
@@ -25,221 +18,256 @@ Este documento rastrea el progreso de implementación comparado con el documento
 
 ---
 
-## Fase 1: Fundamentos - Detalle
+## Fase 1: Fundamentos ✅ COMPLETADA
 
-### 1.1 Estructura de Carpetas
-| Item | Estado | Archivo/Carpeta |
-|------|--------|-----------------|
-| ✅ Estructura backend | Completado | `backend/src/` |
-| ✅ Estructura mobile | Completado | `mobile/src/` |
-| ✅ Carpetas de servicios | Completado | `backend/src/services/` |
-| ✅ Carpetas de features | Completado | `mobile/src/features/` |
+### 1.1 Infraestructura ✅
+| Item | Estado | Notas |
+|------|--------|-------|
+| ✅ Docker Swarm configurado | Completado | Stack: agente |
+| ✅ Traefik reverse proxy | Completado | v3.6.6 |
+| ✅ SSL/TLS | Completado | Cloudflare Origin Cert |
+| ✅ Docker Secrets | Completado | jwt, openai, db_password |
+| ✅ UFW Firewall | Completado | 22, 80, 443 |
+| ✅ Fail2ban | Completado | SSH protection |
+| ✅ SSH hardened | Completado | Key-only auth |
 
-### 1.2 Setup Backend (Node.js + Fastify)
+### 1.2 Setup Backend ✅
 | Item | Estado | Archivo |
 |------|--------|---------|
 | ✅ package.json | Completado | `backend/package.json` |
 | ✅ tsconfig.json | Completado | `backend/tsconfig.json` |
-| ✅ .env.example | Completado | `backend/.env.example` |
-| ✅ Tipos TypeScript | Completado | `backend/src/types/index.ts` |
-| ✅ Utilidad de entorno | Completado | `backend/src/utils/env.ts` |
-| ✅ Cliente PostgreSQL | Completado | `backend/src/utils/db.ts` |
-| ✅ Cliente OpenAI | Completado | `backend/src/utils/openai.ts` |
-| ✅ App Fastify | Completado | `backend/src/app.ts` |
-| ✅ Entry point | Completado | `backend/src/server.ts` |
-| ⚪ Instalar dependencias | Pendiente | `npm install` |
-| ⚪ Crear archivo .env | Pendiente | Copiar de .env.example |
+| ✅ Dockerfile | Completado | `backend/Dockerfile` |
+| ✅ docker-entrypoint.sh | Completado | Carga secrets, espera DNS |
+| ✅ Tipos TypeScript | Completado | `src/types/index.ts` |
+| ✅ Utils (env, db, openai) | Completado | `src/utils/*.ts` |
+| ✅ App Fastify | Completado | `src/app.ts` |
+| ✅ Entry point | Completado | `src/server.ts` |
 
-### 1.3 Setup PostgreSQL
+### 1.3 PostgreSQL ✅
 | Item | Estado | Archivo |
 |------|--------|---------|
-| ✅ Schema completo | Completado | `backend/database/schema.sql` |
-| ⚪ Crear base de datos | Pendiente | `CREATE DATABASE task_tracker_ai` |
-| ⚪ Ejecutar schema | Pendiente | `\i schema.sql` |
+| ✅ Schema completo (10 tablas) | Completado | `database/schema.sql` |
+| ✅ Base de datos creada | Completado | task_tracker_ai |
+| ✅ Healthcheck | Completado | pg_isready |
 
-**Tablas definidas en schema.sql:**
-- ✅ users
-- ✅ categories
-- ✅ conversations
-- ✅ messages
-- ✅ tasks
-- ✅ task_events
-- ✅ goals
-- ✅ goal_progress
-- ✅ check_ins
-- ✅ daily_summaries
-
-### 1.4 Auth Service (JWT)
+### 1.4 Auth Service ✅
 | Item | Estado | Archivo |
 |------|--------|---------|
-| ✅ Rutas placeholder | Completado | `backend/src/routes/auth.routes.ts` |
-| ⚪ Schemas de validación | Pendiente | `backend/src/schemas/auth.schema.ts` |
-| ⚪ Repository de usuarios | Pendiente | `backend/src/repositories/users.repository.ts` |
-| ⚪ Auth service | Pendiente | `backend/src/services/auth/auth.service.ts` |
-| ⚪ Implementar POST /register | Pendiente | - |
-| ⚪ Implementar POST /login | Pendiente | - |
-| ⚪ Implementar GET /me | Pendiente | - |
+| ✅ Schemas de validación | Completado | `src/schemas/auth.schema.ts` |
+| ✅ Users repository | Completado | `src/repositories/users.repository.ts` |
+| ✅ Auth service | Completado | `src/services/auth/auth.service.ts` |
+| ✅ Auth middleware | Completado | `src/middleware/auth.middleware.ts` |
+| ✅ POST /register | Completado | Probado ✓ |
+| ✅ POST /login | Completado | Probado ✓ |
+| ✅ GET /me | Completado | Probado ✓ |
 
-### 1.5 Chat Service (GPT-5 básico)
+### 1.5 Chat Service ✅
 | Item | Estado | Archivo |
 |------|--------|---------|
-| ✅ Rutas placeholder | Completado | `backend/src/routes/chat.routes.ts` |
-| ⚪ Repository de mensajes | Pendiente | `backend/src/repositories/messages.repository.ts` |
-| ⚪ AI service | Pendiente | `backend/src/services/ai/ai.service.ts` |
-| ⚪ System prompt | Pendiente | `backend/src/services/ai/systemPrompt.ts` |
-| ⚪ Implementar POST /message | Pendiente | - |
+| ✅ Chat schemas | Completado | `src/schemas/chat.schema.ts` |
+| ✅ Messages repository | Completado | `src/repositories/messages.repository.ts` |
+| ✅ System prompt | Completado | `src/services/ai/systemPrompt.ts` |
+| ✅ AI service | Completado | `src/services/ai/ai.service.ts` |
+| ✅ POST /message | Completado | - |
+| ✅ GET /conversations | Completado | - |
+| ✅ GET /conversations/:id | Completado | - |
+| ✅ POST /conversations | Completado | - |
 
-### 1.6 Tasks Service
+### 1.6 Tasks Service ✅
 | Item | Estado | Archivo |
 |------|--------|---------|
-| ✅ Rutas placeholder | Completado | `backend/src/routes/tasks.routes.ts` |
-| ⚪ Repository de tareas | Pendiente | `backend/src/repositories/tasks.repository.ts` |
-| ⚪ Tasks service | Pendiente | `backend/src/services/tasks/tasks.service.ts` |
-
-### 1.7 Setup React Native + Expo
-| Item | Estado | Archivo |
-|------|--------|---------|
-| ⚪ Crear proyecto Expo | Pendiente | `npx create-expo-app` |
-| ⚪ Configurar navegación | Pendiente | - |
-| ⚪ Store Zustand | Pendiente | - |
-| ⚪ Cliente API | Pendiente | - |
-
-### 1.8 Integración Deepgram
-| Item | Estado | Archivo |
-|------|--------|---------|
-| ⚪ Voice routes | Pendiente | `backend/src/routes/voice.routes.ts` |
-| ⚪ Deepgram service | Pendiente | `backend/src/services/voice/deepgram.service.ts` |
-| ⚪ Hook useDeepgram | Pendiente | `mobile/src/features/voice-input/hooks/` |
+| ✅ Tasks schemas | Completado | `src/schemas/tasks.schema.ts` |
+| ✅ Tasks repository | Completado | `src/repositories/tasks.repository.ts` |
+| ✅ Tasks service | Completado | `src/services/tasks/tasks.service.ts` |
+| ✅ GET /tasks | Completado | Con filtros |
+| ✅ POST /tasks | Completado | Con startNow |
+| ✅ GET /tasks/active | Completado | - |
+| ✅ GET /tasks/today | Completado | Con stats |
+| ✅ POST /tasks/:id/start | Completado | - |
+| ✅ POST /tasks/:id/pause | Completado | - |
+| ✅ POST /tasks/:id/complete | Completado | - |
+| ✅ POST /tasks/complete-active | Completado | - |
 
 ---
 
-## Archivos Creados Esta Sesión
+## Fase 2: Tools y UI Dinámica ✅ COMPLETADA
+
+### 2.1 AI Tools ✅
+| Item | Estado | Archivo |
+|------|--------|---------|
+| ✅ Definición de tools | Completado | `src/services/ai/tools.ts` |
+| ✅ Tool executor | Completado | `src/services/ai/toolExecutor.ts` |
+| ✅ Integración con AI service | Completado | Loop de tool_calls |
+
+### Tools implementados:
+- `create_task` - Crear tarea (con startNow)
+- `complete_task` - Completar tarea activa
+- `pause_task` - Pausar tarea activa
+- `start_task` - Iniciar/reanudar tarea
+- `get_today_tasks` - Tareas del día
+- `get_active_task` - Tarea en progreso
+- `get_time_stats` - Estadísticas de tiempo
+
+### 2.2 UI Components ✅
+El AI service genera JSON estructurado con `ui_components` array que puede incluir:
+- `task_timeline`
+- `metrics_card`
+- `bar_chart`, `pie_chart`
+- `progress_ring`
+- `task_list`
+- `alert_card`
+- `goal_tracker`
+- `pattern_insight`
+- `quick_actions`
+
+---
+
+## Fase 3: Categorías y Metas ⚪ Pendiente
+
+### 3.1 Categories Service
+| Item | Estado |
+|------|--------|
+| ⬚ Categories repository | Pendiente |
+| ⬚ Categories service | Pendiente |
+| ⬚ CRUD endpoints | Pendiente |
+| ⬚ Asignar categoría a tarea | Pendiente |
+
+### 3.2 Goals Service
+| Item | Estado |
+|------|--------|
+| ⬚ Goals repository | Pendiente |
+| ⬚ Goals service | Pendiente |
+| ⬚ Goal progress tracking | Pendiente |
+| ⬚ CRUD endpoints | Pendiente |
+
+---
+
+## Archivos del Backend
 
 ```
 backend/
-├── package.json                    ✅ Creado
-├── tsconfig.json                   ✅ Creado
-├── .env.example                    ✅ Creado
+├── Dockerfile                           ✅
+├── docker-entrypoint.sh                 ✅
+├── package.json                         ✅
+├── tsconfig.json                        ✅
 ├── database/
-│   └── schema.sql                  ✅ Creado
+│   └── schema.sql                       ✅
 └── src/
-    ├── app.ts                      ✅ Creado
-    ├── server.ts                   ✅ Creado
+    ├── app.ts                           ✅
+    ├── server.ts                        ✅
     ├── types/
-    │   └── index.ts                ✅ Creado
-    ├── utils/
-    │   ├── env.ts                  ✅ Creado
-    │   ├── db.ts                   ✅ Creado
-    │   └── openai.ts               ✅ Creado
-    ├── routes/
-    │   ├── auth.routes.ts          ✅ Creado (placeholder)
-    │   ├── chat.routes.ts          ✅ Creado (placeholder)
-    │   └── tasks.routes.ts         ✅ Creado (placeholder)
+    │   └── index.ts                     ✅
+    ├── schemas/
+    │   ├── auth.schema.ts               ✅
+    │   ├── chat.schema.ts               ✅
+    │   └── tasks.schema.ts              ✅
+    ├── repositories/
+    │   ├── users.repository.ts          ✅
+    │   ├── messages.repository.ts       ✅
+    │   └── tasks.repository.ts          ✅
     ├── services/
-    │   ├── ai/                     📁 Carpeta creada
-    │   ├── auth/                   📁 Carpeta creada
-    │   ├── voice/                  📁 Carpeta creada
-    │   ├── tasks/                  📁 Carpeta creada
-    │   ├── goals/                  📁 Carpeta creada
-    │   ├── check-ins/              📁 Carpeta creada
-    │   └── insights/               📁 Carpeta creada
-    ├── repositories/               📁 Carpeta creada
-    ├── middleware/                 📁 Carpeta creada
-    └── schemas/                    📁 Carpeta creada
-
-mobile/
-└── src/
-    ├── app/                        📁 Carpeta creada
-    ├── features/
-    │   ├── auth/                   📁 Carpeta creada
-    │   ├── chat/                   📁 Carpeta creada
-    │   ├── voice-input/            📁 Carpeta creada
-    │   ├── dynamic-ui/
-    │   │   └── ui-components/      📁 Carpeta creada
-    │   ├── tasks/                  📁 Carpeta creada
-    │   ├── check-in/               📁 Carpeta creada
-    │   ├── goals/                  📁 Carpeta creada
-    │   └── insights/               📁 Carpeta creada
-    └── shared/
-        ├── components/ui/          📁 Carpeta creada
-        ├── hooks/                  📁 Carpeta creada
-        ├── services/api/           📁 Carpeta creada
-        ├── store/                  📁 Carpeta creada
-        ├── types/                  📁 Carpeta creada
-        └── utils/                  📁 Carpeta creada
+    │   ├── auth/
+    │   │   └── auth.service.ts          ✅
+    │   ├── ai/
+    │   │   ├── systemPrompt.ts          ✅
+    │   │   ├── ai.service.ts            ✅
+    │   │   ├── tools.ts                 ✅
+    │   │   └── toolExecutor.ts          ✅
+    │   └── tasks/
+    │       └── tasks.service.ts         ✅
+    ├── middleware/
+    │   └── auth.middleware.ts           ✅
+    ├── routes/
+    │   ├── auth.routes.ts               ✅ Funcional
+    │   ├── chat.routes.ts               ✅ Funcional
+    │   └── tasks.routes.ts              ✅ Funcional
+    └── utils/
+        ├── db.ts                        ✅
+        ├── env.ts                       ✅
+        └── openai.ts                    ✅
 ```
 
 ---
 
-## Próximos Pasos (Para la siguiente sesión)
+## API Endpoints
 
-1. **Instalar dependencias del backend**
-   ```bash
-   cd backend
-   npm install
-   ```
+**Base URL**: `https://agenteapi.itelcore.org`
 
-2. **Crear archivo .env**
-   ```bash
-   cp .env.example .env
-   # Editar .env con credenciales reales
-   ```
+### Auth (`/api/v1/auth`)
+| Endpoint | Estado |
+|----------|--------|
+| POST /register | ✅ Probado |
+| POST /login | ✅ Probado |
+| GET /me | ✅ Probado |
 
-3. **Crear base de datos PostgreSQL**
-   ```sql
-   CREATE DATABASE task_tracker_ai;
-   \c task_tracker_ai
-   \i database/schema.sql
-   ```
+### Chat (`/api/v1/chat`)
+| Endpoint | Estado |
+|----------|--------|
+| POST /message | ✅ Implementado |
+| GET /conversations | ✅ Implementado |
+| GET /conversations/:id | ✅ Implementado |
+| POST /conversations | ✅ Implementado |
 
-4. **Implementar Auth Service completo**
-   - Schemas de validación (Zod)
-   - Repository de usuarios
-   - Lógica de register/login
-
-5. **Implementar Chat Service básico**
-   - Repository de mensajes
-   - AI service con GPT-5
-   - System prompt
-
-6. **Probar que el servidor arranca**
-   ```bash
-   npm run dev
-   ```
+### Tasks (`/api/v1/tasks`)
+| Endpoint | Estado |
+|----------|--------|
+| GET / | ✅ Implementado |
+| POST / | ✅ Implementado |
+| GET /active | ✅ Implementado |
+| GET /today | ✅ Implementado |
+| GET /:id | ✅ Implementado |
+| PUT /:id | ✅ Implementado |
+| DELETE /:id | ✅ Implementado |
+| POST /:id/start | ✅ Implementado |
+| POST /:id/pause | ✅ Implementado |
+| POST /:id/complete | ✅ Implementado |
+| POST /complete-active | ✅ Implementado |
 
 ---
 
-## Decisiones Técnicas Documentadas
+## Próximos Pasos
 
-| Decisión | Elegido | Alternativas Rechazadas |
-|----------|---------|------------------------|
-| Framework Backend | Fastify | Express, Hono |
-| Orquestación IA | API Directa OpenAI | LangChain, LangGraph |
-| Base de Datos | PostgreSQL | MongoDB, SQLite |
-| Voice-to-Text | Deepgram Nova-3 | Whisper, ElevenLabs |
-| Frontend Móvil | React Native + Expo | Flutter, Native |
-| Modelo IA | GPT-5-mini (gpt-4o-mini) | GPT-5, Claude |
+### Inmediato: Probar Chat y Tasks
+1. Probar `POST /chat/message` con conversación real
+2. Probar flujo completo de tareas (crear, iniciar, pausar, completar)
+3. Verificar que los tools de IA funcionan correctamente
 
----
+### Siguiente: Categorías y Metas
+1. Implementar Categories Service
+2. Implementar Goals Service
+3. Agregar tools para metas
 
-## Documentos de Referencia
-
-| Documento | Ubicación |
-|-----------|-----------|
-| Arquitectura completa | `C:\Users\Jos\.claude\plans\serialized-doodling-church.md` |
-| Checklist progreso | `CHECKLIST_PROGRESO.md` (este archivo) |
-| Schema SQL | `backend/database/schema.sql` |
-| Variables de entorno | `backend/.env.example` |
+### Después: App Móvil
+1. Crear proyecto Expo
+2. Configurar navegación
+3. Integrar con API
 
 ---
 
-## Notas de la Sesión
+## Historial de Sesiones
 
-- Se explicó en detalle qué es Deepgram (origen, historia, por qué elegirlo)
-- Se explicó la diferencia entre Deepgram (STT) y ElevenLabs (TTS)
-- Deepgram tiene opción self-hosted pero para este proyecto usaremos cloud con proxy
-- Todos los archivos incluyen documentación detallada en comentarios
+### Sesión 1 (2026-01-08)
+- Estructura inicial de carpetas
+- Schema PostgreSQL
+- Setup básico Fastify
+
+### Sesión 2 (2026-01-10)
+- Auth service completo
+- Users repository
+- Messages repository
+- System prompt
+- **AI Service completo**
+- **Tasks Service completo**
+- **Tools de IA**
+
+### Sesión 3 (2026-01-11)
+- Seguridad VPS (SSH, Fail2ban, UFW)
+- Docker Swarm + Traefik
+- Cloudflare Origin Certificate
+- HTTPS funcionando
+- Verificación endpoints auth
+- Actualización de documentación
 
 ---
 
-**Última actualización:** 2026-01-08 | **Próxima sesión:** Continuar con Auth Service
+*Última actualización: 2026-01-11 | Backend Fase 1-2 completo*

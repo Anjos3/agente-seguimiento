@@ -1,0 +1,31 @@
+# Traefik Static Configuration
+# ============================
+
+api:
+  dashboard: false
+  insecure: false
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+  websecure:
+    address: ":443"
+
+providers:
+  swarm:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: agente_default
+  file:
+    filename: /etc/traefik/dynamic.yml
+    watch: true
+
+log:
+  level: INFO
+
+accessLog: {}

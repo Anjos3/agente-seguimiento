@@ -18,6 +18,7 @@
 
 import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
+import rateLimit from '@fastify/rate-limit';
 import fastifyJwt from '@fastify/jwt';
 import websocket from '@fastify/websocket';
 import { env } from './utils/env.js';
@@ -61,6 +62,25 @@ export async function buildApp(): Promise<FastifyInstance> {
     origin: env.CORS_ORIGIN === '*' ? true : env.CORS_ORIGIN.split(','),
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  });
+
+  // =====================================================
+  // PLUGIN: RATE LIMIT
+  // =====================================================
+  // Protección contra brute force y abuso de la API
+  await app.register(rateLimit, {
+    max: 100,              // 100 requests por ventana
+    timeWindow: '1 minute', // ventana de 1 minuto
+    // Límites específicos por ruta
+    keyGenerator: (request: FastifyRequest) => {
+      // Usar IP + userId si está autenticado
+      return request.ip || 'unknown';
+    },
+    errorResponseBuilder: () => ({
+      success: false,
+      error: 'Demasiadas solicitudes. Intenta de nuevo en un momento.',
+      code: 'RATE_LIMIT_EXCEEDED',
+    }),
   });
 
   // =====================================================
